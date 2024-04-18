@@ -1,7 +1,6 @@
 import http from '../utilities/http';
-import type { Errors } from '../types';
-
-const html = String.raw;
+import { html, clearErrors, renderErrors } from '../utilities/html';
+import { showLoginPage } from './login';
 
 const registerHtml = html`<div
     class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8"
@@ -21,8 +20,9 @@ const registerHtml = html`<div
                 <label
                     for="email"
                     class="block text-sm font-medium leading-6 text-gray-900"
-                    >Email address</label
                 >
+                    Email address
+                </label>
                 <div class="mt-2">
                     <input
                         id="email"
@@ -38,8 +38,9 @@ const registerHtml = html`<div
                 <label
                     for="firstName"
                     class="block text-sm font-medium leading-6 text-gray-900"
-                    >First Name</label
                 >
+                    First Name
+                </label>
                 <div class="mt-2">
                     <input
                         id="firstName"
@@ -55,8 +56,9 @@ const registerHtml = html`<div
                 <label
                     for="lastName"
                     class="block text-sm font-medium leading-6 text-gray-900"
-                    >Last Name</label
                 >
+                    Last Name
+                </label>
                 <div class="mt-2">
                     <input
                         id="lastName"
@@ -73,8 +75,9 @@ const registerHtml = html`<div
                     <label
                         for="password"
                         class="block text-sm font-medium leading-6 text-gray-900"
-                        >Password</label
                     >
+                        Password
+                    </label>
                 </div>
                 <div class="mt-2">
                     <input
@@ -92,8 +95,9 @@ const registerHtml = html`<div
                     <label
                         for="passwordAgain"
                         class="block text-sm font-medium leading-6 text-gray-900"
-                        >Repeat Password</label
                     >
+                        Repeat Password
+                    </label>
                 </div>
                 <div class="mt-2">
                     <input
@@ -143,7 +147,7 @@ export const showRegisterPage = () => {
                 password,
                 passwordAgain
             });
-            console.log(response);
+            showLoginPage();
         } catch (exception: any) {
             if (exception.response.status === 422) {
                 console.error(exception.response.data.errors);
@@ -151,31 +155,4 @@ export const showRegisterPage = () => {
             }
         }
     });
-};
-
-const clearErrors = () => {
-    const errors = document.querySelectorAll('.error-message');
-    errors.forEach(error => error.remove());
-};
-
-const renderErrors = (errors: Errors) => {
-    for (let fieldName in errors) {
-        const error = errors[fieldName];
-
-        const errorElement = render(html`<div
-            class="error-message py-4 text-red-800 border border-red-700 rounded-md px-7 mt-2"
-        >
-            ${error}
-        </div>`);
-
-        const inputField = document.querySelector(`#${fieldName}`);
-        const formGroup = inputField?.parentElement?.parentElement;
-        formGroup?.appendChild(errorElement);
-    }
-};
-
-const render = (html: string) => {
-    const template = document.createElement('template');
-    template.innerHTML = html;
-    return template.content;
 };
